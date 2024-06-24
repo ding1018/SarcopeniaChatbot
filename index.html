@@ -154,9 +154,6 @@
                 <button type="button" class="option-btn" data-value="0">沒有困難</button>
                 <button type="button" class="option-btn" data-value="1">有點困難</button>
                 <button type="button" class="option-btn" data-value="2">非常困難或無法</button>
-                <div class="button-row">
-                    <button type="button" class="btn next-btn" onclick="showNextPage(2)">下一題</button>
-                </div>
             </div>
 
             <!-- 第2题 -->
@@ -169,7 +166,6 @@
                 <button type="button" class="option-btn" data-value="2">非常困難或無法</button>
                 <div class="button-row">
                     <button type="button" class="btn" onclick="showPreviousPage(1)">上一題</button>
-                    <button type="button" class="btn next-btn" onclick="showNextPage(3)">下一題</button>
                 </div>
             </div>
 
@@ -183,7 +179,6 @@
                 <button type="button" class="option-btn" data-value="2">非常困難或無法</button>
                 <div class="button-row">
                     <button type="button" class="btn" onclick="showPreviousPage(2)">上一題</button>
-                    <button type="button" class="btn next-btn" onclick="showNextPage(4)">下一題</button>
                 </div>
             </div>
 
@@ -197,7 +192,6 @@
                 <button type="button" class="option-btn" data-value="2">非常困難或無法</button>
                 <div class="button-row">
                     <button type="button" class="btn" onclick="showPreviousPage(3)">上一題</button>
-                    <button type="button" class="btn next-btn" onclick="showNextPage(5)">下一題</button>
                 </div>
             </div>
 
@@ -230,10 +224,13 @@
         let currentQuestion = 0;
         const answers = new Array(5).fill(null);
 
-        function showNextPage(pageNumber) {
-            document.getElementById(`page-${currentQuestion + 1}`).classList.remove('active');
-            document.getElementById(`page-${pageNumber}`).classList.add('active');
-            currentQuestion = pageNumber - 1;
+        function showNextPage() {
+            const nextPageNumber = currentQuestion + 2;
+            if (nextPageNumber <= 5) {
+                document.getElementById(`page-${currentQuestion + 1}`).classList.remove('active');
+                document.getElementById(`page-${nextPageNumber}`).classList.add('active');
+                currentQuestion = nextPageNumber - 1;
+            }
         }
 
         function showPreviousPage(pageNumber) {
@@ -242,29 +239,7 @@
             currentQuestion = pageNumber - 1;
         }
 
-        function resetForm() {
-            currentQuestion = 0;
-            answers.fill(null);
-            document.querySelectorAll('.question-page').forEach(page => page.classList.remove('active'));
-            document.getElementById('page-1').classList.add('active');
-            document.querySelectorAll('.option-btn').forEach(btn => btn.classList.remove('selected'));
-            document.querySelectorAll('.btn').forEach(btn => btn.classList.remove('active'));
-            document.getElementById('result').innerText = '';
-            document.getElementById('feedback').innerText = '';
-        }
-
-        document.querySelectorAll('.option-btn').forEach(btn => {
-            btn.addEventListener('click', function () {
-                const questionIndex = currentQuestion;
-                answers[questionIndex] = parseInt(this.getAttribute('data-value'));
-                document.querySelectorAll(`#page-${currentQuestion + 1} .option-btn`).forEach(btn => btn.classList.remove('selected'));
-                this.classList.add('selected');
-                document.querySelector(`#page-${currentQuestion + 1} .next-btn`).classList.add('active');
-            });
-        });
-
-        document.getElementById('sarc-f-form').addEventListener('submit', function (e) {
-            e.preventDefault();
+        function showResultPage() {
             const totalScore = answers.reduce((sum, val) => sum + val, 0);
             document.getElementById('result').innerText = `總分: ${totalScore}`;
             let feedback = '';
@@ -276,6 +251,33 @@
             document.getElementById('feedback').innerText = feedback;
             document.querySelectorAll('.question-page').forEach(page => page.classList.remove('active'));
             document.getElementById('result-page').classList.add('active');
+        }
+
+        function resetForm() {
+            currentQuestion = 0;
+            answers.fill(null);
+            document.querySelectorAll('.question-page').forEach(page => page.classList.remove('active'));
+            document.getElementById('page-1').classList.add('active');
+            document.querySelectorAll('.option-btn').forEach(btn => btn.classList.remove('selected'));
+            document.getElementById('result').innerText = '';
+            document.getElementById('feedback').innerText = '';
+        }
+
+        document.querySelectorAll('.option-btn').forEach(btn => {
+            btn.addEventListener('click', function () {
+                const questionIndex = currentQuestion;
+                answers[questionIndex] = parseInt(this.getAttribute('data-value'));
+                document.querySelectorAll(`#page-${currentQuestion + 1} .option-btn`).forEach(btn => btn.classList.remove('selected'));
+                this.classList.add('selected');
+                if (currentQuestion < 4) {
+                    showNextPage();
+                }
+            });
+        });
+
+        document.getElementById('sarc-f-form').addEventListener('submit', function (e) {
+            e.preventDefault();
+            showResultPage();
         });
     </script>
 </body>
