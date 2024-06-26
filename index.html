@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>肌少症檢測工具</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background-color: #D6EADF;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: auto;
+            background-color: #ADCBE3;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border: 1px solid #A7C4B5;
+        }
+
+        .question-page {
+            display: none;
+        }
+
+        .question-page.active {
+            display: block;
+        }
+
+        .question-container {
+            margin: 20px 0;
+            padding: 20px;
+            border: 2px solid #A7C4B5;
+            border-radius: 10px;
+            background-color: #A7C4B5;
+            text-align: center;
+        }
+
+        .question-container label {
+            font-size: 24px;
+            color: #333;
+        }
+
+        .option-btn {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            text-align: center;
+            border: 2px solid #A7C4B5;
+            background-color: #fff;
+            color: #333;
+            font-size: 16px;
+            cursor: pointer;
+            margin-bottom: 10px;
+            border-radius: 5px;
+        }
+
+        .option-btn.selected {
+            background-color: #A7C4B5;
+            color: white;
+        }
+
+        .button-row {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 15px;
+            text-align: center;
+            border: none;
+            background-color: #A7C4B5;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            margin: 10px 0;
+            border-radius: 5px;
+            flex: 1;
+            margin-right: 5px;
+        }
+
+        .btn:last-child {
+            margin-right: 0;
+        }
+
+        .btn:hover {
+            background-color: #85A394;
+        }
+
+        #result,
+        #feedback {
+            margin-top: 20px;
+            color: #333;
+            text-align: center;
+        }
+
+        #result-page {
+            text-align: center;
+            padding: 20px;
+            background-color: #F5F5F5;
+            border: 2px solid #A7C4B5;
+            border-radius: 10px;
+        }
+
+        #result-page h2 {
+            color: #28A745;
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+
+        #result-page h3 {
+            color: #17A2B8;
+            font-size: 20px;
+            margin-bottom: 20px;
+        }
+
+        #result-page ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        #result-page ul li {
+            background: #A7C4B5;
+            color: white;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+        }
+
+        #result {
+            font-size: 28px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <form id="sarc-f-form">
+            <!-- 第1题 -->
+            <div class="question-page active" id="page-1">
+                <div class="question-container">
+                    <label>提10磅重物有多困難？</label>
+                </div>
+                <button type="button" class="option-btn" data-value="0">沒有困難</button>
+                <button type="button" class="option-btn" data-value="1">有點困難</button>
+                <button type="button" class="option-btn" data-value="2">非常困難或無法</button>
+            </div>
+
+            <!-- 第2题 -->
+            <div class="question-page" id="page-2">
+                <div class="question-container">
+                    <label>走過一個房間有多困難？</label>
+                </div>
+                <button type="button" class="option-btn" data-value="0">沒有困難</button>
+                <button type="button" class="option-btn" data-value="1">有點困難</button>
+                <button type="button" class="option-btn" data-value="2">非常困難或無法</button>
+                <div class="button-row">
+                    <button type="button" class="btn" onclick="showPreviousPage(1)">上一題</button>
+                </div>
+            </div>
+
+            <!-- 第3题 -->
+            <div class="question-page" id="page-3">
+                <div class="question-container">
+                    <label>從椅子或床上起身有多困難？</label>
+                </div>
+                <button type="button" class="option-btn" data-value="0">沒有困難</button>
+                <button type="button" class="option-btn" data-value="1">有點困難</button>
+                <button type="button" class="option-btn" data-value="2">非常困難或無法</button>
+                <div class="button-row">
+                    <button type="button" class="btn" onclick="showPreviousPage(2)">上一題</button>
+                </div>
+            </div>
+
+            <!-- 第4题 -->
+            <div class="question-page" id="page-4">
+                <div class="question-container">
+                    <label>爬10階樓梯有多困難？</label>
+                </div>
+                <button type="button" class="option-btn" data-value="0">沒有困難</button>
+                <button type="button" class="option-btn" data-value="1">有點困難</button>
+                <button type="button" class="option-btn" data-value="2">非常困難或無法</button>
+                <div class="button-row">
+                    <button type="button" class="btn" onclick="showPreviousPage(3)">上一題</button>
+                </div>
+            </div>
+
+            <!-- 第5题 -->
+            <div class="question-page" id="page-5">
+                <div class="question-container">
+                    <label>過去一年你跌倒幾次？</label>
+                </div>
+                <button type="button" class="option-btn" data-value="0">沒有</button>
+                <button type="button" class="option-btn" data-value="1">1-3次</button>
+                <button type="button" class="option-btn" data-value="2">4次以上</button>
+                <div class="button-row">
+                    <button type="button" class="btn" onclick="showPreviousPage(4)">上一題</button>
+                    <button type="submit" class="btn next-btn">提交</button>
+                </div>
+            </div>
+        </form>
+
+        <!-- 結果頁面 -->
+        <div class="question-page" id="result-page">
+            <div id="result"></div>
+            <div id="feedback"></div>
+            <div class="button-row">
+                <button type="button" class="btn" onclick="resetForm()">再試一次</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentQuestion = 0;
+        const answers = new Array(5).fill(null);
+
+        function showNextPage() {
+            const nextPageNumber = currentQuestion + 2;
+            if (nextPageNumber <= 5) {
+                document.getElementById(`page-${currentQuestion + 1}`).classList.remove('active');
+                document.getElementById(`page-${nextPageNumber}`).classList.add('active');
+                currentQuestion = nextPageNumber - 1;
+            }
+        }
+
+        function showPreviousPage(pageNumber) {
+            document.getElementById(`page-${currentQuestion + 1}`).classList.remove('active');
+            document.getElementById(`page-${pageNumber}`).classList.add('active');
+            currentQuestion = pageNumber - 1;
+        }
+
+        function showResultPage() {
+            const totalScore = answers.reduce((sum, val) => sum + val, 0);
+            document.getElementById('result').innerText = `總分: ${totalScore}`;
+            let feedback = '';
+            if (totalScore >= 4) {
+                feedback = '肌少症風險較高，建議就醫評估。';
+            } else {
+                feedback = '肌少症風險較低，繼續保持健康生活。';
+            }
+            document.getElementById('feedback').innerText = feedback;
+            document.querySelectorAll('.question-page').forEach(page => page.classList.remove('active'));
+            document.getElementById('result-page').classList.add('active');
+        }
+
+        function resetForm() {
+            currentQuestion = 0;
+            answers.fill(null
+
+);
+            document.querySelectorAll('.question-page').forEach(page => page.classList.remove('active'));
+            document.getElementById('page-1').classList.add('active');
+            document.querySelectorAll('.option-btn').forEach(btn => btn.classList.remove('selected'));
+            document.getElementById('result').innerText = '';
+            document.getElementById('feedback').innerText = '';
+        }
+
+        document.querySelectorAll('.option-btn').forEach(btn => {
+            btn.addEventListener('click', function () {
+                const questionIndex = currentQuestion;
+                answers[questionIndex] = parseInt(this.getAttribute('data-value'));
+                document.querySelectorAll(`#page-${currentQuestion + 1} .option-btn`).forEach(btn => btn.classList.remove('selected'));
+                this.classList.add('selected');
+                if (currentQuestion < 4) {
+                    showNextPage();
+                }
+            });
+        });
+
+        document.getElementById('sarc-f-form').addEventListener('submit', function (e) {
+            e.preventDefault();
+            showResultPage();
+        });
+    </script>
+</body>
+
+</html>
