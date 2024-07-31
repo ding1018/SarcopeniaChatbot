@@ -247,20 +247,20 @@
         }
 
         function submitResult(score, feedback) {
-            fetch('/submit', {
+            fetch('https://your-flask-app.herokuapp.com/submit', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({ score, feedback }),
             })
-                .then(response => response.json())
-                .then(data => {
-                    console.log('Success:', data);
-                })
-                .catch((error) => {
-                    console.error('Error:', error);
-                });
+            .then(response => response.json())
+            .then(data => {
+                console.log('Success:', data);
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+            });
         }
 
         function resetForm() {
