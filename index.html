@@ -140,7 +140,7 @@
 <body>
     <div class="container">
         <form id="sarc-f-form">
-            <!-- 第1题 -->
+            <!-- 問題頁面 -->
             <div class="question-page active" id="page-1">
                 <div class="question-container">
                     <label>提10磅重物有多困難？</label>
@@ -150,7 +150,6 @@
                 <button type="button" class="option-btn" data-value="2">非常困難或無法</button>
             </div>
 
-            <!-- 第2题 -->
             <div class="question-page" id="page-2">
                 <div class="question-container">
                     <label>走過一個房間有多困難？</label>
@@ -163,7 +162,6 @@
                 </div>
             </div>
 
-            <!-- 第3题 -->
             <div class="question-page" id="page-3">
                 <div class="question-container">
                     <label>從椅子或床上起身有多困難？</label>
@@ -176,7 +174,6 @@
                 </div>
             </div>
 
-            <!-- 第4题 -->
             <div class="question-page" id="page-4">
                 <div class="question-container">
                     <label>爬10階樓梯有多困難？</label>
@@ -189,7 +186,6 @@
                 </div>
             </div>
 
-            <!-- 第5题 -->
             <div class="question-page" id="page-5">
                 <div class="question-container">
                     <label>過去一年你跌倒幾次？</label>
@@ -199,7 +195,7 @@
                 <button type="button" class="option-btn" data-value="2">4次以上</button>
                 <div class="button-row">
                     <button type="button" class="btn" onclick="showPreviousPage(4)">上一題</button>
-                    <button type="submit" class="btn next-btn">提交</button>
+                    <button type="submit" class="btn">提交</button>
                 </div>
             </div>
         </form>
@@ -245,13 +241,31 @@
             document.getElementById('feedback').innerText = feedback;
             document.querySelectorAll('.question-page').forEach(page => page.classList.remove('active'));
             document.getElementById('result-page').classList.add('active');
+
+            // 提交結果到後端
+            submitResult(totalScore, feedback);
+        }
+
+        function submitResult(score, feedback) {
+            fetch('/submit', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ score, feedback }),
+            })
+                .then(response => response.json())
+                .then(data => {
+                    console.log('Success:', data);
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                });
         }
 
         function resetForm() {
             currentQuestion = 0;
-            answers.fill(null
-
-);
+            answers.fill(null);
             document.querySelectorAll('.question-page').forEach(page => page.classList.remove('active'));
             document.getElementById('page-1').classList.add('active');
             document.querySelectorAll('.option-btn').forEach(btn => btn.classList.remove('selected'));
@@ -273,7 +287,11 @@
 
         document.getElementById('sarc-f-form').addEventListener('submit', function (e) {
             e.preventDefault();
-            showResultPage();
+            if (answers.includes(null)) {
+                alert('請完成所有問題後提交。');
+            } else {
+                showResultPage();
+            }
         });
     </script>
 </body>
