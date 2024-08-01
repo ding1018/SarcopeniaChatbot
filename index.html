@@ -144,18 +144,18 @@
                 <div class="question-container">
                     <label>提10磅重物有多困難？</label>
                 </div>
-                <button type="button" class="option-btn" data-value="0">沒有困難</button>
-                <button type="button" class="option-btn" data-value="1">有點困難</button>
-                <button type="button" class="option-btn" data-value="2">非常困難或無法</button>
+                <button type="button" class="option-btn" data-value="0" onclick="selectOption(0, this)">沒有困難</button>
+                <button type="button" class="option-btn" data-value="1" onclick="selectOption(1, this)">有點困難</button>
+                <button type="button" class="option-btn" data-value="2" onclick="selectOption(2, this)">非常困難或無法</button>
             </div>
 
             <div class="question-page" id="page-2">
                 <div class="question-container">
                     <label>走過一個房間有多困難？</label>
                 </div>
-                <button type="button" class="option-btn" data-value="0">沒有困難</button>
-                <button type="button" class="option-btn" data-value="1">有點困難</button>
-                <button type="button" class="option-btn" data-value="2">非常困難或無法</button>
+                <button type="button" class="option-btn" data-value="0" onclick="selectOption(0, this)">沒有困難</button>
+                <button type="button" class="option-btn" data-value="1" onclick="selectOption(1, this)">有點困難</button>
+                <button type="button" class="option-btn" data-value="2" onclick="selectOption(2, this)">非常困難或無法</button>
                 <div class="button-row">
                     <button type="button" class="btn" onclick="showPreviousPage(1)">上一題</button>
                 </div>
@@ -165,9 +165,9 @@
                 <div class="question-container">
                     <label>從椅子或床上起身有多困難？</label>
                 </div>
-                <button type="button" class="option-btn" data-value="0">沒有困難</button>
-                <button type="button" class="option-btn" data-value="1">有點困難</button>
-                <button type="button" class="option-btn" data-value="2">非常困難或無法</button>
+                <button type="button" class="option-btn" data-value="0" onclick="selectOption(0, this)">沒有困難</button>
+                <button type="button" class="option-btn" data-value="1" onclick="selectOption(1, this)">有點困難</button>
+                <button type="button" class="option-btn" data-value="2" onclick="selectOption(2, this)">非常困難或無法</button>
                 <div class="button-row">
                     <button type="button" class="btn" onclick="showPreviousPage(2)">上一題</button>
                 </div>
@@ -177,9 +177,9 @@
                 <div class="question-container">
                     <label>爬10階樓梯有多困難？</label>
                 </div>
-                <button type="button" class="option-btn" data-value="0">沒有困難</button>
-                <button type="button" class="option-btn" data-value="1">有點困難</button>
-                <button type="button" class="option-btn" data-value="2">非常困難或無法</button>
+                <button type="button" class="option-btn" data-value="0" onclick="selectOption(0, this)">沒有困難</button>
+                <button type="button" class="option-btn" data-value="1" onclick="selectOption(1, this)">有點困難</button>
+                <button type="button" class="option-btn" data-value="2" onclick="selectOption(2, this)">非常困難或無法</button>
                 <div class="button-row">
                     <button type="button" class="btn" onclick="showPreviousPage(3)">上一題</button>
                 </div>
@@ -189,9 +189,9 @@
                 <div class="question-container">
                     <label>過去一年你跌倒幾次？</label>
                 </div>
-                <button type="button" class="option-btn" data-value="0">沒有</button>
-                <button type="button" class="option-btn" data-value="1">1-3次</button>
-                <button type="button" class="option-btn" data-value="2">4次以上</button>
+                <button type="button" class="option-btn" data-value="0" onclick="selectOption(0, this)">沒有</button>
+                <button type="button" class="option-btn" data-value="1" onclick="selectOption(1, this)">1-3次</button>
+                <button type="button" class="option-btn" data-value="2" onclick="selectOption(2, this)">4次以上</button>
                 <div class="button-row">
                     <button type="button" class="btn" onclick="showPreviousPage(4)">上一題</button>
                     <button type="button" class="btn" onclick="submitQuiz()">提交</button>
@@ -213,9 +213,22 @@
         let currentQuestion = 0;
         const answers = new Array(5).fill(null);
 
-        function selectOption(value) {
+        function selectOption(value, button) {
             answers[currentQuestion] = value;
+            highlightSelectedOption(button);
             showNextPage();
+        }
+
+        function highlightSelectedOption(button) {
+            const buttons = button.parentElement.querySelectorAll('.option-btn');
+            buttons.forEach(btn => {
+                btn.classList.remove('selected');
+                btn.style.backgroundColor = '#fff';
+                btn.style.color = '#333';
+            });
+            button.classList.add('selected');
+            button.style.backgroundColor = '#A7C4B5';
+            button.style.color = 'white';
         }
 
         function showNextPage() {
@@ -252,6 +265,11 @@
             answers.fill(null);
             document.querySelectorAll('.question-page').forEach(page => page.classList.remove('active'));
             document.getElementById('page-1').classList.add('active');
+            document.querySelectorAll('.option-btn').forEach(btn => {
+                btn.classList.remove('selected');
+                btn.style.backgroundColor = '#fff';
+                btn.style.color = '#333';
+            });
         }
 
         function submitQuiz() {
