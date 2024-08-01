@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="zh-Hant">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -195,7 +194,7 @@
                 <button type="button" class="option-btn" data-value="2">4次以上</button>
                 <div class="button-row">
                     <button type="button" class="btn" onclick="showPreviousPage(4)">上一題</button>
-                    <button type="submit" class="btn">提交</button>
+                    <button type="button" class="btn" onclick="submitQuiz()">提交</button>
                 </div>
             </div>
         </form>
@@ -213,6 +212,11 @@
     <script>
         let currentQuestion = 0;
         const answers = new Array(5).fill(null);
+
+        function selectOption(value) {
+            answers[currentQuestion] = value;
+            showNextPage();
+        }
 
         function showNextPage() {
             const nextPageNumber = currentQuestion + 2;
@@ -235,4 +239,42 @@
             let feedback = '';
             if (totalScore >= 4) {
                 feedback = '肌少症風險較高，建議就醫評估。';
+            } else {
+                feedback = '肌少症風險較低，建議持續注意健康。';
             }
+            document.getElementById('feedback').innerText = feedback;
+            document.getElementById('result-page').classList.add('active');
+            document.getElementById(`page-${currentQuestion + 1}`).classList.remove('active');
+        }
+
+        function resetForm() {
+            currentQuestion = 0;
+            answers.fill(null);
+            document.querySelectorAll('.question-page').forEach(page => page.classList.remove('active'));
+            document.getElementById('page-1').classList.add('active');
+        }
+
+        function submitQuiz() {
+            showResultPage();
+
+            // 初始化LIFF
+            liff.init({
+                liffId: "2005695258-0rnXZ37r"
+            }).then(() => {
+                // 發送測驗結果到LINE聊天視窗
+                const totalScore = answers.reduce((sum, val) => sum + val, 0);
+                liff.sendMessages([{
+                    type: 'text',
+                    text: `您的測驗結果總分為: ${totalScore}`
+                }]).then(() => {
+                    liff.closeWindow();
+                }).catch((err) => {
+                    console.error('Error sending message:', err);
+                });
+            }).catch((err) => {
+                console.error('LIFF Initialization failed:', err);
+            });
+        }
+    </script>
+</body>
+</html>
