@@ -1,13 +1,4 @@
-line-bot-sdk
-bs4
-flask
-lask-cors
-pymongo
-datetime
-pandas
-SnowNLP
-emoji
-pyshorteners
-scipy
-cors
-gunicorn
+Flask==2.0.3
+line-bot-sdk==1.19.0
+gunicorn==20.1.0
+flask-cors==3.0.10
