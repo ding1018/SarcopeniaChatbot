@@ -285,11 +285,13 @@
         function submitQuiz() {
             showResultPage();
             const totalScore = answers.reduce((sum, val) => sum + val, 0);
+            console.log("準備發送消息，總分:", totalScore);
 
             liff.sendMessages([{
                 type: 'text',
                 text: `您的測驗結果總分為: ${totalScore}`
             }]).then(() => {
+                console.log("消息發送成功");
                 liff.closeWindow();
             }).catch((err) => {
                 console.error('發送消息錯誤:', err);
