@@ -134,6 +134,7 @@
             font-weight: bold;
         }
     </style>
+    <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
 </head>
 
 <body>
@@ -272,25 +273,26 @@
             });
         }
 
+        // 初始化 LIFF
+        liff.init({
+            liffId: "2005695258-0rnXZ37r"
+        }).then(() => {
+            console.log("LIFF 初始化成功");
+        }).catch((err) => {
+            console.error('LIFF 初始化失敗:', err);
+        });
+
         function submitQuiz() {
             showResultPage();
+            const totalScore = answers.reduce((sum, val) => sum + val, 0);
 
-            // 初始化LIFF
-            liff.init({
-                liffId: "2005695258-0rnXZ37r"
-            }).then(() => {
-                // 發送測驗結果到LINE聊天視窗
-                const totalScore = answers.reduce((sum, val) => sum + val, 0);
-                liff.sendMessages([{
-                    type: 'text',
-                    text: `您的測驗結果總分為: ${totalScore}`
-                }]).then(() => {
-                    liff.closeWindow();
-                }).catch((err) => {
-                    console.error('Error sending message:', err);
-                });
+            liff.sendMessages([{
+                type: 'text',
+                text: `您的測驗結果總分為: ${totalScore}`
+            }]).then(() => {
+                liff.closeWindow();
             }).catch((err) => {
-                console.error('LIFF Initialization failed:', err);
+                console.error('發送消息錯誤:', err);
             });
         }
     </script>
