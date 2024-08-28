@@ -7,8 +7,8 @@ import os
 app = Flask(__name__)
 
 # 從環境變量中讀取 LINE Bot API 和 Webhook Handler 的 TOKEN 和 SECRET
-line_bot_api = LineBotApi(os.getenv('CHANNEL_ACCESS_TOKEN'))
-handler = WebhookHandler(os.getenv('CHANNEL_SECRET'))
+line_bot_api = LineBotApi(os.getenv('SWnTYljZDexfuVVILbVFZtYwSmwvETNtQ8VPThNLmW9lNNvBnEEoDDM39vLGx1eltiVqCumYtQyZvDE7HZd3X30Zob1Ec2puBXL+iPdq5mdbtfxKGq2GIMoqe5XIGRKeXi3uQ9YAHzp2BH5pdw+ACQdB04t89/1O/w1cDnyilFU='))
+handler = WebhookHandler(os.getenv('9b2a0edc84246b578d1c1e9c37fe5896'))
 
 @app.route("/callback", methods=['POST'])
 def callback():
