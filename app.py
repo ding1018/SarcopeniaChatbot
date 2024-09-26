@@ -66,7 +66,7 @@ def handle_message(event):
             )
         )
         line_bot_api.reply_message(event.reply_token, buttons_template)
-    
+
     # 當用戶回傳測驗結果總分為 0 到 4 時，回傳運動處方的按鈕模板訊息
     elif user_message == "運動處方" or user_message in [
         "我的肌少症測驗結果總分為: 0",
@@ -97,6 +97,38 @@ def handle_message(event):
                     MessageAction(
                         label="負重訓練運動處方",
                         text="負重訓練運動處方"
+                    )
+                ]
+            )
+        )
+        line_bot_api.reply_message(event.reply_token, buttons_template)
+
+    # 當用戶回傳 "醫師介紹" 或口腔肌少症測驗結果總分為 5 到 10 時，回傳醫師介紹的按鈕模板訊息
+    elif user_message in [
+        "我的口腔肌少症測驗結果總分為: 5", 
+        "我的口腔肌少症測驗結果總分為: 6", 
+        "我的口腔肌少症測驗結果總分為: 7", 
+        "我的口腔肌少症測驗結果總分為: 8", 
+        "我的口腔肌少症測驗結果總分為: 9", 
+        "我的口腔肌少症測驗結果總分為: 10",
+    ]:
+        buttons_template = TemplateSendMessage(
+            alt_text="醫師介紹",
+            template=ButtonsTemplate(
+                thumbnail_image_url="https://images.unsplash.com/photo-1597764690523-15bea4c581c9?q=80&w=2670&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",  # 替換為你的圖片 URL
+                image_aspect_ratio="rectangle",
+                image_size="contain",
+                image_background_color="#FFFFFF",
+                title="醫師介紹",
+                text="請選擇科別",
+                actions=[
+                    MessageAction(
+                        label="復健科醫師",
+                        text="復健科醫師"
+                    ),
+                    MessageAction(
+                        label="高齡醫學科醫師",
+                        text="高齡醫學科醫師"
                     )
                 ]
             )
