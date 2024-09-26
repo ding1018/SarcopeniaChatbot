@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>肌少症檢測工具</title>
+    <title>篩檢工具</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -37,11 +37,6 @@
             text-align: center;
         }
 
-        .question-container label {
-            font-size: 24px;
-            color: #333;
-        }
-
         .option-btn {
             display: block;
             width: 100%;
@@ -54,16 +49,12 @@
             cursor: pointer;
             margin-bottom: 10px;
             border-radius: 5px;
+            transition: background-color 0.3s, color 0.3s;
         }
 
         .option-btn.selected {
-            background-color: #A7C4B5;
+            background-color: #85A394;
             color: white;
-        }
-
-        .button-row {
-            display: flex;
-            justify-content: space-between;
         }
 
         .btn {
@@ -78,127 +69,182 @@
             margin: 10px 0;
             border-radius: 5px;
             flex: 1;
-            margin-right: 5px;
-        }
-
-        .btn:last-child {
-            margin-right: 0;
         }
 
         .btn:hover {
             background-color: #85A394;
         }
 
-        #result,
+        #result {
+            font-size: 28px;
+            font-weight: bold;
+        }
+
         #feedback {
             margin-top: 20px;
             color: #333;
             text-align: center;
         }
 
-        #result-page {
-            text-align: center;
-            padding: 20px;
-            background-color: #F5F5F5;
-            border: 2px solid #A7C4B5;
-            border-radius: 10px;
-        }
-
-        #result-page h2 {
-            color: #28A745;
-            font-size: 24px;
-            margin-bottom: 20px;
-        }
-
-        #result-page h3 {
-            color: #17A2B8;
-            font-size: 20px;
-            margin-bottom: 20px;
-        }
-
-        #result-page ul {
-            list-style: none;
-            padding: 0;
-        }
-
-        #result-page ul li {
-            background: #A7C4B5;
-            color: white;
-            padding: 10px;
-            margin: 10px 0;
-            border-radius: 5px;
-        }
-
-        #result {
-            font-size: 28px;
-            font-weight: bold;
+        .button-row {
+            display: flex;
+            justify-content: flex-start;
         }
     </style>
     <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
 </head>
-
 <body>
     <div class="container">
-        <form id="sarc-f-form">
-            <!-- 問題頁面 -->
-            <div class="question-page active" id="page-1">
-                <div class="question-container">
-                    <label>提10磅重物有多困難？</label>
-                </div>
-                <button type="button" class="option-btn" data-value="0" onclick="selectOption(0, this)">沒有困難</button>
-                <button type="button" class="option-btn" data-value="1" onclick="selectOption(1, this)">有點困難</button>
-                <button type="button" class="option-btn" data-value="2" onclick="selectOption(2, this)">非常困難或無法</button>
+        <!-- 選擇測驗類型 -->
+        <div class="question-page active" id="selection-page">
+            <div class="question-container">
+                <label>選擇要進行的篩檢：</label>
             </div>
+            <button type="button" class="option-btn" onclick="startTest('sarcopenia')">肌少症檢測</button>
+            <button type="button" class="option-btn" onclick="startTest('eat10')">口腔肌少症檢測 (EAT-10)</button>
+        </div>
 
-            <div class="question-page" id="page-2">
-                <div class="question-container">
-                    <label>走過一個房間有多困難？</label>
-                </div>
-                <button type="button" class="option-btn" data-value="0" onclick="selectOption(0, this)">沒有困難</button>
-                <button type="button" class="option-btn" data-value="1" onclick="selectOption(1, this)">有點困難</button>
-                <button type="button" class="option-btn" data-value="2" onclick="selectOption(2, this)">非常困難或無法</button>
-                <div class="button-row">
-                    <button type="button" class="btn" onclick="showPreviousPage(1)">上一題</button>
-                </div>
+        <!-- 肌少症檢測頁面 -->
+        <div class="question-page" id="sarcopenia-page-1">
+            <div class="question-container">
+                <label>1. 提10磅（約4.54公斤）重物有多困難？</label>
             </div>
+            <button type="button" class="option-btn" data-value="0" onclick="selectOption(0, this, 1, 'sarcopenia')">沒有困難</button>
+            <button type="button" class="option-btn" data-value="1" onclick="selectOption(1, this, 1, 'sarcopenia')">有點困難</button>
+            <button type="button" class="option-btn" data-value="2" onclick="selectOption(2, this, 1, 'sarcopenia')">非常困難或無法</button>
 
-            <div class="question-page" id="page-3">
-                <div class="question-container">
-                    <label>從椅子或床上起身有多困難？</label>
-                </div>
-                <button type="button" class="option-btn" data-value="0" onclick="selectOption(0, this)">沒有困難</button>
-                <button type="button" class="option-btn" data-value="1" onclick="selectOption(1, this)">有點困難</button>
-                <button type="button" class="option-btn" data-value="2" onclick="selectOption(2, this)">非常困難或無法</button>
-                <div class="button-row">
-                    <button type="button" class="btn" onclick="showPreviousPage(2)">上一題</button>
-                </div>
+            <div class="button-row">
+                <button type="button" class="btn" onclick="showPreviousPage('selection-page')">上一題</button>
             </div>
+        </div>
 
-            <div class="question-page" id="page-4">
-                <div class="question-container">
-                    <label>爬10階樓梯有多困難？</label>
-                </div>
-                <button type="button" class="option-btn" data-value="0" onclick="selectOption(0, this)">沒有困難</button>
-                <button type="button" class="option-btn" data-value="1" onclick="selectOption(1, this)">有點困難</button>
-                <button type="button" class="option-btn" data-value="2" onclick="selectOption(2, this)">非常困難或無法</button>
-                <div class="button-row">
-                    <button type="button" class="btn" onclick="showPreviousPage(3)">上一題</button>
-                </div>
+        <div class="question-page" id="sarcopenia-page-2">
+            <div class="question-container">
+                <label>2. 走過一個房間有多困難？</label>
             </div>
+            <button type="button" class="option-btn" data-value="0" onclick="selectOption(0, this, 2, 'sarcopenia')">沒有困難</button>
+            <button type="button" class="option-btn" data-value="1" onclick="selectOption(1, this, 2, 'sarcopenia')">有點困難</button>
+            <button type="button" class="option-btn" data-value="2" onclick="selectOption(2, this, 2, 'sarcopenia')">非常困難或無法</button>
 
-            <div class="question-page" id="page-5">
-                <div class="question-container">
-                    <label>過去一年你跌倒幾次？</label>
-                </div>
-                <button type="button" class="option-btn" data-value="0" onclick="selectOption(0, this)">沒有</button>
-                <button type="button" class="option-btn" data-value="1" onclick="selectOption(1, this)">1-3次</button>
-                <button type="button" class="option-btn" data-value="2" onclick="selectOption(2, this)">4次以上</button>
-                <div class="button-row">
-                    <button type="button" class="btn" onclick="showPreviousPage(4)">上一題</button>
-                    <button type="button" class="btn" onclick="submitQuiz()">提交</button>
-                </div>
+            <div class="button-row">
+                <button type="button" class="btn" onclick="showPreviousPage('sarcopenia-page-1')">上一題</button>
             </div>
-        </form>
+        </div>
+
+        <div class="question-page" id="sarcopenia-page-3">
+            <div class="question-container">
+                <label>3. 從椅子或床上起身有多困難？</label>
+            </div>
+            <button type="button" class="option-btn" data-value="0" onclick="selectOption(0, this, 3, 'sarcopenia')">沒有困難</button>
+            <button type="button" class="option-btn" data-value="1" onclick="selectOption(1, this, 3, 'sarcopenia')">有點困難</button>
+            <button type="button" class="option-btn" data-value="2" onclick="selectOption(2, this, 3, 'sarcopenia')">非常困難或無法</button>
+
+            <div class="button-row">
+                <button type="button" class="btn" onclick="showPreviousPage('sarcopenia-page-2')">上一題</button>
+            </div>
+        </div>
+
+        <div class="question-page" id="sarcopenia-page-4">
+            <div class="question-container">
+                <label>4. 爬10階樓梯有多困難？</label>
+            </div>
+            <button type="button" class="option-btn" data-value="0" onclick="selectOption(0, this, 4, 'sarcopenia')">沒有困難</button>
+            <button type="button" class="option-btn" data-value="1" onclick="selectOption(1, this, 4, 'sarcopenia')">有點困難</button>
+            <button type="button" class="option-btn" data-value="2" onclick="selectOption(2, this, 4, 'sarcopenia')">非常困難或無法</button>
+
+            <div class="button-row">
+                <button type="button" class="btn" onclick="showPreviousPage('sarcopenia-page-3')">上一題</button>
+            </div>
+        </div>
+
+        <div class="question-page" id="sarcopenia-page-5">
+            <div class="question-container">
+                <label>5. 過去一年你跌倒幾次？</label>
+            </div>
+            <button type="button" class="option-btn" data-value="0" onclick="selectOption(0, this, 5, 'sarcopenia')">沒有</button>
+            <button type="button" class="option-btn" data-value="1" onclick="selectOption(1, this, 5, 'sarcopenia')">1-3次</button>
+            <button type="button" class="option-btn" data-value="2" onclick="selectOption(2, this, 5, 'sarcopenia')">4次以上</button>
+
+            <div class="button-row">
+                <button type="button" class="btn" onclick="showPreviousPage('sarcopenia-page-4')">上一題</button>
+            </div>
+        </div>
+
+        <!-- EAT-10 測驗頁面 -->
+        <div class="question-page" id="eat10-page-1">
+            <div class="question-container">
+                <label>1. 吞嚥問題讓我體重減輕。</label>
+            </div>
+            <button type="button" class="option-btn" data-value="0" onclick="selectOption(0, this, 6, 'eat10')">沒有問題</button>
+            <button type="button" class="option-btn" data-value="1" onclick="selectOption(1, this, 6, 'eat10')">問題輕微</button>
+            <button type="button" class="option-btn" data-value="2" onclick="selectOption(2, this, 6, 'eat10')">問題中等</button>
+            <button type="button" class="option-btn" data-value="3" onclick="selectOption(3, this, 6, 'eat10')">問題嚴重</button>
+            <button type="button" class="option-btn" data-value="4" onclick="selectOption(4, this, 6, 'eat10')">非常嚴重</button>
+
+            <div class="button-row">
+                <button type="button" class="btn" onclick="showPreviousPage('selection-page')">上一題</button>
+            </div>
+        </div>
+
+        <div class="question-page" id="eat10-page-2">
+            <div class="question-container">
+                <label>2. 吞嚥問題讓我不能像以前一樣外出用餐。</label>
+            </div>
+            <button type="button" class="option-btn" data-value="0" onclick="selectOption(0, this, 7, 'eat10')">沒有問題</button>
+            <button type="button" class="option-btn" data-value="1" onclick="selectOption(1, this, 7, 'eat10')">問題輕微</button>
+            <button type="button" class="option-btn" data-value="2" onclick="selectOption(2, this, 7, 'eat10')">問題中等</button>
+            <button type="button" class="option-btn" data-value="3" onclick="selectOption(3, this, 7, 'eat10')">問題嚴重</button>
+            <button type="button" class="option-btn" data-value="4" onclick="selectOption(4, this, 7, 'eat10')">非常嚴重</button>
+
+            <div class="button-row">
+                <button type="button" class="btn" onclick="showPreviousPage('eat10-page-1')">上一題</button>
+            </div>
+        </div>
+
+        <div class="question-page" id="eat10-page-3">
+            <div class="question-container">
+                <label>3. 喝飲料時要花很多力氣。</label>
+            </div>
+            <button type="button" class="option-btn" data-value="0" onclick="selectOption(0, this, 8, 'eat10')">沒有問題</button>
+            <button type="button" class="option-btn" data-value="1" onclick="selectOption(1, this, 8, 'eat10')">問題輕微</button>
+            <button type="button" class="option-btn" data-value="2" onclick="selectOption(2, this, 8, 'eat10')">問題中等</button>
+            <button type="button" class="option-btn" data-value="3" onclick="selectOption(3, this, 8, 'eat10')">問題嚴重</button>
+            <button type="button" class="option-btn" data-value="4" onclick="selectOption(4, this, 8, 'eat10')">非常嚴重</button>
+
+            <div class="button-row">
+                <button type="button" class="btn" onclick="showPreviousPage('eat10-page-2')">上一題</button>
+            </div>
+        </div>
+
+        <div class="question-page" id="eat10-page-4">
+            <div class="question-container">
+                <label>4. 吃固體食物時要花很多力氣。</label>
+            </div>
+            <button type="button" class="option-btn" data-value="0" onclick="selectOption(0, this, 9, 'eat10')">沒有問題</button>
+            <button type="button" class="option-btn" data-value="1" onclick="selectOption(1, this, 9, 'eat10')">問題輕微</button>
+            <button type="button" class="option-btn" data-value="2" onclick="selectOption(2, this, 9, 'eat10')">問題中等</button>
+            <button type="button" class="option-btn" data-value="3" onclick="selectOption(3, this, 9, 'eat10')">問題嚴重</button>
+            <button type="button" class="option-btn" data-value="4" onclick="selectOption(4, this, 9, 'eat10')">非常嚴重</button>
+
+            <div class="button-row">
+                <button type="button" class="btn" onclick="showPreviousPage('eat10-page-3')">上一題</button>
+            </div>
+        </div>
+
+        <div class="question-page" id="eat10-page-5">
+            <div class="question-container">
+                <label>5. 吞藥丸時要花很多力氣。</label>
+            </div>
+            <button type="button" class="option-btn" data-value="0" onclick="selectOption(0, this, 10, 'eat10')">沒有問題</button>
+            <button type="button" class="option-btn" data-value="1" onclick="selectOption(1, this, 10, 'eat10')">問題輕微</button>
+            <button type="button" class="option-btn" data-value="2" onclick="selectOption(2, this, 10, 'eat10')">問題中等</button>
+            <button type="button" class="option-btn" data-value="3" onclick="selectOption(3, this, 10, 'eat10')">問題嚴重</button>
+            <button type="button" class="option-btn" data-value="4" onclick="selectOption(4, this, 10, 'eat10')">非常嚴重</button>
+
+            <div class="button-row">
+                <button type="button" class="btn" onclick="showPreviousPage('eat10-page-4')">上一題</button>
+            </div>
+        </div>
 
         <!-- 結果頁面 -->
         <div class="question-page" id="result-page">
@@ -209,95 +255,114 @@
 
     <script>
         let currentQuestion = 0;
-        const answers = new Array(5).fill(null);
-
-        function selectOption(value, button) {
-            answers[currentQuestion] = value;
-            highlightSelectedOption(button);
-            showNextPage();
+        const sarcopeniaAnswers = Array(5).fill(null);
+        const eat10Answers = Array(10).fill(null);
+    
+        function startTest(testType) {
+            document.getElementById('selection-page').classList.remove('active');
+            if (testType === 'sarcopenia') {
+                document.getElementById('sarcopenia-page-1').classList.add('active');
+            } else {
+                document.getElementById('eat10-page-1').classList.add('active');
+            }
         }
-
+    
+        function selectOption(value, button, pageNumber, testType) {
+            highlightSelectedOption(button);
+            if (testType === 'sarcopenia') {
+                sarcopeniaAnswers[pageNumber - 1] = value;
+                if (pageNumber === 5) {
+                    submitSarcopeniaQuiz(); // 提交肌少症測驗
+                } else {
+                    showNextPage(pageNumber, testType);
+                }
+            } else if (testType === 'eat10') {
+                eat10Answers[pageNumber - 6] = value;
+                if (pageNumber === 10) {
+                    submitEat10Quiz(); // 提交口腔肌少症測驗
+                } else {
+                    showNextPage(pageNumber, testType);
+                }
+            }
+        }
+    
         function highlightSelectedOption(button) {
             const buttons = button.parentElement.querySelectorAll('.option-btn');
             buttons.forEach(btn => {
                 btn.classList.remove('selected');
-                btn.style.backgroundColor = '#fff';
-                btn.style.color = '#333';
             });
             button.classList.add('selected');
-            button.style.backgroundColor = '#A7C4B5';
-            button.style.color = 'white';
         }
-
-        function showNextPage() {
-            const nextPageNumber = currentQuestion + 2;
-            if (nextPageNumber <= 5) {
-                document.getElementById(`page-${currentQuestion + 1}`).classList.remove('active');
-                document.getElementById(`page-${nextPageNumber}`).classList.add('active');
-                currentQuestion = nextPageNumber - 1;
+    
+        function showNextPage(pageNumber, testType) {
+            if (testType === 'sarcopenia') {
+                document.getElementById(`sarcopenia-page-${pageNumber}`).classList.remove('active');
+                document.getElementById(`sarcopenia-page-${pageNumber + 1}`).classList.add('active');
+            } else if (testType === 'eat10') {
+                document.getElementById(`eat10-page-${pageNumber - 5}`).classList.remove('active');
+                document.getElementById(`eat10-page-${pageNumber - 4}`).classList.add('active');
             }
+            currentQuestion++;
         }
-
-        function showPreviousPage(pageNumber) {
-            document.getElementById(`page-${currentQuestion + 1}`).classList.remove('active');
-            document.getElementById(`page-${pageNumber}`).classList.add('active');
-            currentQuestion = pageNumber - 1;
+    
+        function showPreviousPage(pageId) {
+            document.querySelector('.question-page.active').classList.remove('active');
+            document.getElementById(pageId).classList.add('active');
+            currentQuestion--;
         }
-
-        function showResultPage() {
-            const totalScore = answers.reduce((sum, val) => sum + val, 0);
-            document.getElementById('result').innerText = `總分: ${totalScore}`;
-            let feedback = '';
-            if (totalScore >= 4) {
-                feedback = '肌少症風險較高，建議就醫評估。';
-            } else {
-                feedback = '肌少症風險較低，建議持續注意健康。';
-            }
-            document.getElementById('feedback').innerText = feedback;
-            document.getElementById('result-page').classList.add('active');
-            document.getElementById(`page-${currentQuestion + 1}`).classList.remove('active');
-        }
-
-        function resetForm() {
-            currentQuestion = 0;
-            answers.fill(null);
-            document.querySelectorAll('.question-page').forEach(page => page.classList.remove('active'));
-            document.getElementById('page-1').classList.add('active');
-            document.querySelectorAll('.option-btn').forEach(btn => {
-                btn.classList.remove('selected');
-                btn.style.backgroundColor = '#fff';
-                btn.style.color = '#333';
+    
+        // 提交肌少症測驗結果並回傳分數
+        function submitSarcopeniaQuiz() {
+            const totalScore = sarcopeniaAnswers.reduce((sum, val) => sum + val, 0);
+            const feedback = totalScore >= 4 ? '肌少症風險較高，建議就醫評估。' : '肌少症風險較低，建議持續注意健康。';
+            showResultPage(feedback);
+            // 回傳分數給 LINE
+            liff.sendMessages([{
+                type: 'text',
+                text: `我的肌少症測驗結果總分為: ${totalScore}`
+            }]).then(() => {
+                console.log("肌少症分數已回傳");
+                liff.closeWindow();
+            }).catch((err) => {
+                console.error('發送肌少症分數錯誤:', err);
             });
         }
-
+    
+        // 提交口腔肌少症測驗結果並回傳分數
+        function submitEat10Quiz() {
+            const totalScore = eat10Answers.reduce((sum, val) => sum + val, 0);
+            const feedback = totalScore >= 3 ? '口腔肌少症風險較高，建議就醫評估。' : '口腔肌少症風險較低，建議持續注意健康。';
+            showResultPage(feedback);
+            // 回傳分數給 LINE
+            liff.sendMessages([{
+                type: 'text',
+                text: `我的口腔肌少症測驗結果總分為: ${totalScore}`
+            }]).then(() => {
+                console.log("口腔肌少症分數已回傳");
+                liff.closeWindow();
+            }).catch((err) => {
+                console.error('發送口腔肌少症分數錯誤:', err);
+            });
+        }
+    
+        function showResultPage(feedback) {
+            document.getElementById('result-page').classList.add('active');
+            document.getElementById('result').innerText = `結果: ${feedback}`;
+            document.querySelector('.question-page.active').classList.remove('active');
+        }
+    
         // 初始化 LIFF
         liff.init({
             liffId: "2005695258-0rnXZ37r"
         }).then(() => {
             console.log("LIFF 初始化成功");
-            // 檢查用戶是否授權
             if (!liff.isLoggedIn()) {
                 liff.login();
             }
         }).catch((err) => {
             console.error('LIFF 初始化失敗:', err);
         });
-
-        function submitQuiz() {
-            showResultPage();
-            const totalScore = answers.reduce((sum, val) => sum + val, 0);
-            console.log("準備發送消息，總分:", totalScore);
-
-            liff.sendMessages([{
-                type: 'text',
-                text: `我的測驗結果總分為: ${totalScore}`
-            }]).then(() => {
-                console.log("消息發送成功");
-                liff.closeWindow();
-            }).catch((err) => {
-                console.error('發送消息錯誤:', err);
-            });
-        }
     </script>
+    
 </body>
 </html>

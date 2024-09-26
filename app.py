@@ -7,8 +7,8 @@ import os
 app = Flask(__name__)
 
 # 從環境變量中讀取 LINE Bot API 和 Webhook Handler 的 TOKEN 和 SECRET
-line_bot_api = LineBotApi(os.getenv('SWnTYljZDexfuVVILbVFZtYwSmwvETNtQ8VPThNLmW9lNNvBnEEoDDM39vLGx1eltiVqCumYtQyZvDE7HZd3X30Zob1Ec2puBXL+iPdq5mdbtfxKGq2GIMoqe5XIGRKeXi3uQ9YAHzp2BH5pdw+ACQdB04t89/1O/w1cDnyilFU='))
-handler = WebhookHandler(os.getenv('9b2a0edc84246b578d1c1e9c37fe5896'))
+line_bot_api = LineBotApi(os.getenv('LINE_CHANNEL_ACCESS_TOKEN'))
+handler = WebhookHandler(os.getenv('LINE_CHANNEL_SECRET'))
 
 @app.route("/callback", methods=['POST'])
 def callback():
@@ -31,8 +31,15 @@ def callback():
 def handle_message(event):
     user_message = event.message.text
 
-    if user_message == "醫師介紹":
-        # 回應醫師介紹的按鈕模板訊息
+    # 當用戶回傳 "醫師介紹" 或測驗結果總分為 5 到 10 時，回傳醫師介紹的按鈕模板訊息
+    if user_message == "醫師介紹" or user_message in [
+        "我的肌少症測驗結果總分為: 5", 
+        "我的肌少症測驗結果總分為: 6", 
+        "我的肌少症測驗結果總分為: 7", 
+        "我的肌少症測驗結果總分為: 8", 
+        "我的肌少症測驗結果總分為: 9", 
+        "我的肌少症測驗結果總分為: 10",
+    ]:
         buttons_template = TemplateSendMessage(
             alt_text="醫師介紹",
             template=ButtonsTemplate(
@@ -59,12 +66,47 @@ def handle_message(event):
             )
         )
         line_bot_api.reply_message(event.reply_token, buttons_template)
-    else:
-        # 回應用戶的測驗結果
-        line_bot_api.reply_message(
-            event.reply_token,
-            TextSendMessage(text=f"收到您的測驗結果: {user_message}")
+    
+    # 當用戶回傳測驗結果總分為 0 到 4 時，回傳運動處方的按鈕模板訊息
+    elif user_message == "運動處方" or user_message in [
+        "我的肌少症測驗結果總分為: 0",
+        "我的肌少症測驗結果總分為: 1",
+        "我的肌少症測驗結果總分為: 2",
+        "我的肌少症測驗結果總分為: 3",
+        "我的肌少症測驗結果總分為: 4"
+    ]:
+        buttons_template = TemplateSendMessage(
+            alt_text="我要做運動",
+            template=ButtonsTemplate(
+                thumbnail_image_url="https://images.unsplash.com/photo-1522898467493-49726bf28798?q=80&w=2670&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA==",
+                title="我要做運動",
+                text="請選擇運動類別",
+                actions=[
+                    MessageAction(
+                        label="居家運動處方",
+                        text="居家運動處方"
+                    ),
+                    MessageAction(
+                        label="核心運動處方",
+                        text="核心運動處方"
+                    ),
+                    MessageAction(
+                        label="靜態延伸運動處方",
+                        text="靜態延伸運動處方"
+                    ),
+                    MessageAction(
+                        label="負重訓練運動處方",
+                        text="負重訓練運動處方"
+                    )
+                ]
+            )
         )
+        line_bot_api.reply_message(event.reply_token, buttons_template)
+    
+    # 用戶選擇按鈕選項後的處理
+    elif user_message in ["復健科醫師", "骨科醫師", "高齡醫學科醫師", "居家運動處方", "核心運動處方", "靜態延伸運動處方", "負重訓練運動處方"]:
+        # 這裡可以選擇不做任何回應或進行其他處理
+        pass
 
 if __name__ == "__main__":
     port = int(os.environ.get('PORT', 5000))
